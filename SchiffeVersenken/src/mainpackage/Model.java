@@ -23,7 +23,7 @@ public class Model {
 	private static final int SIZE = 10;
 	
 	/**
-	 * 
+	 * Model constructor
 	 */
 	public Model() {
 		shipMaps.add(new Ship[SIZE][SIZE]);
@@ -50,9 +50,12 @@ public class Model {
 	/**
 	 * adds a ship to ship map ship list and view map of player n
 	 * 
+	 * @see Ship
+	 * 
 	 * @param n player ID
 	 * @param x x coordinate of the ship
 	 * @param y y coordinate of the ship
+	 * @param ship ship object to be added
 	 */
 	public void addShip(int n, int x, int y, Ship ship) {
 		shipMaps.get(n)[x][y] = ship;
@@ -64,6 +67,7 @@ public class Model {
 	 * gets the view map for player n
 	 * 
 	 * @param int n player ID
+	 * 
 	 * @return view map of player n
 	 */
 	public CellType[][] getViewMap(int n) {
@@ -74,9 +78,10 @@ public class Model {
 	 * adds a shot to the given x and y coordinates in the ship and view maps
 	 * and checks if a ship was sunken
 	 * 
-	 * @param m 
-	 * @param x
-	 * @param y
+	 * @param m ID of player being shot
+	 * @param x x coordinate of the shot
+	 * @param y y coordinate of the shot
+	 * 
 	 * @return false
 	 */
 	public boolean addShot(int m, int x, int y) {
@@ -96,7 +101,7 @@ public class Model {
 	}
 	
 	/**
-	 * chnges a ships segments to the SUNKEN_SHIP cell type
+	 * changes a ships segments to the SUNKEN_SHIP cell type
 	 * 
 	 * @param n player ID
 	 * @param ship ship to be sunken
