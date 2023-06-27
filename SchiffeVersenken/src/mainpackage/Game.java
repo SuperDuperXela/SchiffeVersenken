@@ -42,6 +42,9 @@ public class Game {
 
     }
 
+    /**
+     * displays the main menu
+     */
     public static void menu() {
         while (true) {
             //menü ausgeben und eingabe anfordern,
