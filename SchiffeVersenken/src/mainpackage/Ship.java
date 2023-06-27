@@ -58,6 +58,7 @@ public class Ship {
 		}
 	}
 
+
 	/**
 	 * adds a hit to a ship at the given coordinates and increases hits taken by one
 	 * 
