@@ -89,7 +89,7 @@ public class Game {
 
 	private void startPVP() {
 		placeShipsPhase(0);
-		System.out.print("Spieler 1, alle Schiffe platziert!\n \n \n \n \n \n \n \n");
+		System.out.print("Spieler 1, alle Schiffe platziert!\n \n \n \n \n \n \n \n \n \n \n");
 
 		// TODO: Konsole leeren?
 
