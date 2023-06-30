@@ -15,11 +15,11 @@ public class Ship {
 	 */
 	private boolean[] segments;
 	/**
-	 * number of horizontal segments
+	 * x coordinates of segments
 	 */
 	private int[] xSegments;
 	/**
-	 * number of vertical segments
+	 * y coordinates of segments
 	 */
 	private int[] ySegments;
 
@@ -102,14 +102,14 @@ public class Ship {
 	}
 
 	/**
-	 * @return coordinates of all horizontal segments
+	 * @return x coordinates of segments
 	 */
 	public int[] getXSegments() {
 		return xSegments;
 	}
 
 	/**
-	 * @return coordinates of all vertical segments
+	 * @return y coordinates of segments
 	 */
 	public int[] getYSegments() {
 		return ySegments;

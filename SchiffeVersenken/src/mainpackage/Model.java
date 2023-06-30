@@ -34,7 +34,7 @@ public class Model {
 
 		shipLists.add(new ArrayList<>());
 		shipLists.add(new ArrayList<>());
-		
+
 		fillViewMapWithWater(0);
 		fillViewMapWithWater(1);
 	}
@@ -118,13 +118,17 @@ public class Model {
 			viewMaps.get(n)[x[i]][y[i]] = CellType.SUNKEN_SHIP;
 		}
 	}
-	
+
 	private void fillViewMapWithWater(int n) {
 		for (int i = 0; i < getViewMap(n).length; i++) {
 			for (int j = 0; j < getViewMap(n).length; j++) {
 				getViewMap(n)[i][j] = CellType.WATER;
 			}
 		}
+	}
+
+	public int getMapSize() {
+		return SIZE;
 	}
 
 }

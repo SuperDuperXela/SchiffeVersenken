@@ -1,9 +1,9 @@
 package mainpackage;
 
 public class View {
-	
+
 	private Model model;
-	
+
 	public View(Model model) {
 		this.model = model;
 	}
@@ -16,16 +16,16 @@ public class View {
 	public void printAll(int n) {
 
 	}
-	
+
 	public void printShipMap(int n) {
 		for (int i = 0; i < model.getViewMap(n).length; i++) {
 			for (int j = 0; j < model.getViewMap(n).length; j++) {
-					System.out.print(model.getViewMap(n)[j][i].character + " ");
+				System.out.print(model.getViewMap(n)[j][i].character + " ");
 			}
 			System.out.println();
 		}
 	}
-	
+
 	public void printShootMap(int n) {
 		for (int i = 0; i < model.getViewMap(n).length; i++) {
 			for (int j = 0; j < model.getViewMap(n).length; j++) {

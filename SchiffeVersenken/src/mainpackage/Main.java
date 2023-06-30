@@ -16,10 +16,10 @@ public class Main {
 		Model model = new Model();
 		View view = new View(model);
 		Game game = new Game(model, view);
+		
+		game.menu();
 
-//		game.menu();
-
-		game.test();
+//		game.test();
 
 	}
 
