@@ -62,8 +62,6 @@ public class Game {
 	 * displays the main menu
 	 */
 	public void menu() {
-		// menü ausgeben und eingabe anfordern,
-		// while (true) damit das menü nach spielende wieder geöffnet wird
 
 		// commandline prototyp
 		System.out.println("1) PVP starten\n" + "2) PVE starten\n" + "3) Spielstand laden\n" + "4) Beenden");
@@ -108,7 +106,7 @@ public class Game {
 
 	public void SaveAndExit() {
 		// Spielstand speichern (in json datei?) und programm schließen
-		// wenn json schon für spielstände genutzt wird könte man auch eine
+		// wenn json schon für spielstände genutzt wird könnte man auch eine
 		// config.json einbauen
 		// dort zbsp spielfeldgröße, schiffe (anzahl/längen) o.ä. hinterlegen
 	}
@@ -123,7 +121,7 @@ public class Game {
 				Boolean vertical = (input == 1);
 
 				if (placeShip(n, coordinates[0], coordinates[1], length, vertical)) {
-					System.out.println("Ung�ltige Position!");
+					System.out.println("Ung�ltige Position!");
 				} else {
 					loop = false;
 				}
@@ -132,7 +130,11 @@ public class Game {
 		}
 	}
 
-	// funktioniert nur f�r 0 bis 10
+	/**
+	 * requests and validates input
+	 * 
+	 * @return formatted coordintates
+	 */
 	private int[] readInput() {
 		System.out.println("Koordinaten eingeben: ");
 		String input = scanner.next();
@@ -154,6 +156,17 @@ public class Game {
 		return coordinates;
 	}
 
+	/**
+	 * places a ship at the given coordinates
+	 * 
+	 * @param n player ID
+	 * @param x x coordinate of the ships first segment
+	 * @param y x coordinate of the ships first segment
+	 * @param length length of the ship in segments
+	 * @param vertical true if the ship is vertical
+	 * 
+	 * @return false
+	 */
 	private boolean placeShip(int n, int x, int y, int length, boolean vertical) {
 		Ship ship = new Ship(x, y, length, vertical);
 

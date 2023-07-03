@@ -119,6 +119,11 @@ public class Model {
 		}
 	}
 
+	/**
+	 * changes all cells of a map to water
+	 * 
+	 * @param n player ID
+	 */
 	private void fillViewMapWithWater(int n) {
 		for (int i = 0; i < getViewMap(n).length; i++) {
 			for (int j = 0; j < getViewMap(n).length; j++) {
@@ -127,6 +132,9 @@ public class Model {
 		}
 	}
 
+	/**
+	 * @return map size
+	 */
 	public int getMapSize() {
 		return SIZE;
 	}
