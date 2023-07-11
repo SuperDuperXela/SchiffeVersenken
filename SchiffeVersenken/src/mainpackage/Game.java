@@ -10,7 +10,8 @@ public class Game {
 
 	private Scanner scanner = new Scanner(System.in);
 
-	private static final int[] shipsLength = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
+	private static final int[] shipsLength = { 5, 4 };
+	private static final int[] shipsLengthcopy = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
 
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
 
@@ -87,12 +88,47 @@ public class Game {
 
 	private void startPVP() {
 		placeShipsPhase(0);
-		System.out.print("Spieler 1, alle Schiffe platziert!\n \n \n \n \n \n \n \n \n \n \n");
-
-		// TODO: Konsole leeren?
-
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		placeShipsPhase(1);
 		// Spieler 1 / 2 abwechselnd am Zug
+		int active = 0;
+		int opponent = 1;
+		boolean gameEnd = false;
+		String fail = "";
+
+		while (!gameEnd) {
+			int[] coord;
+			do {
+				view.printAll(active, opponent);
+				System.out.println("Koordinaten eingeben (a - j, 1 - 10): " + fail);
+				fail = " Ungültige Eingabe!";
+				coord = readInput();
+			} while (model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SHOT_WATER
+					|| model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SHOT_SHIP
+					|| model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SUNKEN_SHIP);
+
+			if (model.addShot(opponent, coord)) {
+				// Überprüfe ob Spieler gewonnen hat
+				int counter = 0;
+				
+				for (Ship ship : model.getShipLists(opponent)) {
+					if (ship.isSunken()) {
+						counter += 1;
+					}
+				}
+				if (counter == model.getShipLists(opponent).size()) {
+					// Spieler hat gewonnen
+					gameEnd = true;
+					System.out.print("Spieler " + (active + 1) + " hat gewonnen!");
+				}
+			}
+
+			int h = active;
+			active = opponent;
+			opponent = h;
+			fail = "";
+		}
+
 	}
 
 	private void startPVE() {
@@ -112,11 +148,14 @@ public class Game {
 	}
 
 	private void placeShipsPhase(int n) {
+		System.out.println("Spieler " + (n + 1) + ", platziere deine Schiffe!");
 		for (int length : shipsLength) {
 			boolean loop = true;
 			while (loop) {
+				printShipNameMessage(length);
+				System.out.println("Koordinaten eingeben (a - j, 1 - 10): ");
 				int[] coordinates = readInput();
-				System.out.println("Ausrichtung eingeben (0 Waagerecht, 1 Senkrecht): ");
+				System.out.println("Ausrichtung eingeben (1 Senkrecht, 2 Waagerecht): ");
 				int input = scanner.nextInt();
 				Boolean vertical = (input == 1);
 
@@ -128,6 +167,7 @@ public class Game {
 			}
 			view.printShipMap(n);
 		}
+		System.out.print("Spieler " + (n + 1) + ", alle Schiffe platziert!\n \n \n \n \n \n \n \n \n \n \n");
 	}
 
 	/**
@@ -136,14 +176,13 @@ public class Game {
 	 * @return formatted coordintates
 	 */
 	private int[] readInput() {
-		System.out.println("Koordinaten eingeben: ");
-		String input = scanner.next();
-
 		int[] coordinates = new int[2];
+		String input;
+		do {
 
-		if (!coordinatesMap.containsKey(input.charAt(0))) {
-			// meckern
-		}
+			input = scanner.next();
+		} while (!coordinatesMap.containsKey(input.charAt(0)));
+
 		coordinates[0] = coordinatesMap.get(input.charAt(0)) - 1;
 		if (input.length() > 3) {
 			// meckern
@@ -159,10 +198,10 @@ public class Game {
 	/**
 	 * places a ship at the given coordinates
 	 * 
-	 * @param n player ID
-	 * @param x x coordinate of the ships first segment
-	 * @param y x coordinate of the ships first segment
-	 * @param length length of the ship in segments
+	 * @param n        player ID
+	 * @param x        x coordinate of the ships first segment
+	 * @param y        x coordinate of the ships first segment
+	 * @param length   length of the ship in segments
 	 * @param vertical true if the ship is vertical
 	 * 
 	 * @return false
@@ -205,6 +244,25 @@ public class Game {
 		}
 
 		return false;
+	}
+
+	private void printShipNameMessage(int length) {
+		switch (length) {
+		case 5:
+			System.out.println("Schlachtschiff (5 Kästchen)");
+			break;
+		case 4:
+			System.out.println("Kreuzer (4 Kästchen)");
+			break;
+		case 3:
+			System.out.println("Zerstörer (3 Kästchen)");
+			break;
+		case 2:
+			System.out.println("U-Boot (2 Kästchen)");
+			break;
+		default:
+			break;
+		}
 	}
 
 }

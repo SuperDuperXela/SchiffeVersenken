@@ -1,6 +1,7 @@
 package mainpackage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Model {
 
@@ -12,6 +13,8 @@ public class Model {
 	 * list containing all ship objects of a player
 	 */
 	private ArrayList<ArrayList<Ship>> shipLists = new ArrayList<>();
+	
+
 	/**
 	 * map to be displayed to a player
 	 */
@@ -104,6 +107,10 @@ public class Model {
 
 	}
 
+	public boolean addShot(int m, int[] coord) {
+		return addShot(m, coord[0], coord[1]);
+	}
+
 	/**
 	 * changes a ships segments to the SUNKEN_SHIP cell type
 	 * 
@@ -139,4 +146,8 @@ public class Model {
 		return SIZE;
 	}
 
+	public ArrayList<Ship> getShipLists(int m) {
+		return shipLists.get(m);
+	}
+	
 }
