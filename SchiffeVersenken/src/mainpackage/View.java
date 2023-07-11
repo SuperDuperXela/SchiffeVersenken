@@ -17,6 +17,11 @@ public class View {
 
 	}
 
+	/**
+	 * prints a players ship map to the console
+	 * 
+	 * @param n player ID
+	 */
 	public void printShipMap(int n) {
 		for (int i = 0; i < model.getViewMap(n).length; i++) {
 			for (int j = 0; j < model.getViewMap(n).length; j++) {
@@ -26,6 +31,11 @@ public class View {
 		}
 	}
 
+	/**
+	 * prints a players shoot map to the console
+	 * 
+	 * @param n player ID
+	 */
 	public void printShootMap(int n) {
 		for (int i = 0; i < model.getViewMap(n).length; i++) {
 			for (int j = 0; j < model.getViewMap(n).length; j++) {
