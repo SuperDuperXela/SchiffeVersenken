@@ -10,8 +10,8 @@ public class Game {
 
 	private Scanner scanner = new Scanner(System.in);
 
-	private static final int[] shipsLength = { 5, 4 };
-	private static final int[] shipsLengthcopy = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
+	private static final int[] SHIPSLENGTH = { 5 };
+	private static final int[] shipsLengthfull = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
 
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
 
@@ -46,17 +46,6 @@ public class Game {
 		model.addShot(0, 5, 2);
 
 		view.printShipMap(0);
-
-		// int[][] zahlen = {{1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}};
-		// System.out.print(zahlen[1][0]);
-
-		// for (int i = 0; i < 4; i++) {
-		// for (int j = 0; j < 4; j++) {
-		// System.out.print(zahlen[i][j] + " ");
-		// }
-		// System.out.println();
-		// }
-
 	}
 
 	/**
@@ -107,6 +96,7 @@ public class Game {
 					|| model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SHOT_SHIP
 					|| model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SUNKEN_SHIP);
 
+			printHitMessage(model.getViewMap(opponent)[coord[0]][coord[1]]);
 			if (model.addShot(opponent, coord)) {
 				// �berpr�fe ob Spieler gewonnen hat
 				int counter = 0;
@@ -122,7 +112,7 @@ public class Game {
 					System.out.print("Spieler " + (active + 1) + " hat gewonnen!");
 				}
 			}
-
+			switchPlayerPhase(opponent);
 			int h = active;
 			active = opponent;
 			opponent = h;
@@ -140,7 +130,7 @@ public class Game {
 		// nur PVE oder PVP verbindung widerherstellen?
 	}
 
-	public void SaveAndExit() {
+	public void saveAndExit() {
 		// Spielstand speichern (in json datei?) und programm schließen
 		// wenn json schon für spielstände genutzt wird könnte man auch eine
 		// config.json einbauen
@@ -149,7 +139,7 @@ public class Game {
 
 	private void placeShipsPhase(int n) {
 		System.out.println("Spieler " + (n + 1) + ", platziere deine Schiffe!");
-		for (int length : shipsLength) {
+		for (int length : SHIPSLENGTH) {
 			boolean loop = true;
 			while (loop) {
 				printShipNameMessage(length);
@@ -264,5 +254,25 @@ public class Game {
 			break;
 		}
 	}
+	
+	private void printHitMessage(CellType cell) {
+		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		String text = "";
+		switch (cell) {
+		case SHIP:
+			text = "Schiff";
+			break;
+		case WATER:
+			text = "Wasser";
+			break;
+		default:
+			break;
+		}
+		System.out.println("Du hast " + text + " getroffen!");
+	}
 
+	private void switchPlayerPhase(int opponent) {
+		System.out.println("Spieler " + (opponent + 1) + " ist am Zug!");
+		scanner.next();
+	}
 }
