@@ -10,7 +10,7 @@ public class Game {
 
 	private Scanner scanner = new Scanner(System.in);
 
-	private static final int[] SHIPSLENGTH = { 5 };
+	private static final int[] SHIPSLENGTH = { 5, 4 };
 	private static final int[] shipsLengthfull = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
 
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
@@ -76,9 +76,11 @@ public class Game {
 	}
 
 	private void startPVP() {
+		view.printShipMap(0);
 		placeShipsPhase(0);
 		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		placeShipsPhase(1);
+		view.printShipMap(1);
 		// Spieler 1 / 2 abwechselnd am Zug
 		int active = 0;
 		int opponent = 1;
