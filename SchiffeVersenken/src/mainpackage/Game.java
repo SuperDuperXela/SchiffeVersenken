@@ -15,6 +15,8 @@ public class Game {
 
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
 
+	private boolean wait = true;
+
 	public Game(Model model, View view) {
 		this.model = model;
 		this.view = view;
@@ -54,7 +56,7 @@ public class Game {
 	public void menu() {
 
 		// commandline prototyp
-		System.out.println("1) PVP starten\n" + "2) PVE starten\n" + "3) Spielstand laden\n" + "4) Beenden");
+		System.out.println("1) PVP starten\n" + "2) PVE starten\n" + "3) Spielstand laden\n" + "4) viewFrame Test");
 
 		String menuChoice = scanner.next();
 
@@ -67,6 +69,9 @@ public class Game {
 			break;
 		case "3":
 			loadGame();
+			break;
+		case "4":
+			viewFrame();
 			break;
 		default:
 			scanner.close();
@@ -102,7 +107,7 @@ public class Game {
 			if (model.addShot(opponent, coord)) {
 				// Überprüfe ob Spieler gewonnen hat
 				int counter = 0;
-				
+
 				for (Ship ship : model.getShipLists(opponent)) {
 					if (ship.isSunken()) {
 						counter += 1;
@@ -256,7 +261,7 @@ public class Game {
 			break;
 		}
 	}
-	
+
 	private void printHitMessage(CellType cell) {
 		System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 		String text = "";
@@ -276,5 +281,89 @@ public class Game {
 	private void switchPlayerPhase(int opponent) {
 		System.out.println("Spieler " + (opponent + 1) + " ist am Zug!");
 		scanner.next();
+	}
+
+	private void viewFrame() {
+		ViewFrame viewFrame = new ViewFrame(model, this);
+
+		placeShipsPhaseFrame(0, viewFrame);
+		placeShipsPhaseFrame(1, viewFrame);
+		// Spieler 1 / 2 abwechselnd am Zug
+		int active = 0;
+		int opponent = 1;
+		boolean gameEnd = false;
+
+		while (!gameEnd) {
+			int[] coord;
+			do {
+				coord = readInputFrame(viewFrame);
+			} while (model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SHOT_WATER
+					|| model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SHOT_SHIP
+					|| model.getViewMap(opponent)[coord[0]][coord[1]] == CellType.SUNKEN_SHIP);
+
+			if (model.addShot(opponent, coord)) {
+				// Überprüfe ob Spieler gewonnen hat
+				int counter = 0;
+
+				for (Ship ship : model.getShipLists(opponent)) {
+					if (ship.isSunken()) {
+						counter += 1;
+					}
+				}
+				if (counter == model.getShipLists(opponent).size()) {
+					// Spieler hat gewonnen
+					gameEnd = true;
+					System.out.print("Spieler " + (active + 1) + " hat gewonnen!");
+				}
+			}
+			switchPlayerPhaseFrame(opponent);
+			int h = active;
+			active = opponent;
+			opponent = h;
+		}
+	}
+
+	private void placeShipsPhaseFrame(int n, ViewFrame viewFrame) {
+		System.out.println("Spieler " + (n + 1) + ", platziere deine Schiffe!");
+		for (int length : SHIPSLENGTH) {
+			boolean loop = true;
+			while (loop) {
+				printShipNameMessage(length);
+				System.out.println("Feld anklicken!");
+				int[] coordinates = readInputFrame(viewFrame);
+				System.out.println("Ausrichtung eingeben (1 Senkrecht, 2 Waagerecht): ");
+//				int input = scanner.nextInt();
+				int input = 1;
+				Boolean vertical = (input == 1);
+
+				if (placeShip(n, coordinates[0], coordinates[1], length, vertical)) {
+					System.out.println("Ungültige Position!");
+				} else {
+					loop = false;
+				}
+			}
+		}
+	}
+
+	private synchronized int[] readInputFrame(ViewFrame viewFrame) {
+		try {
+			while (wait) {
+				this.wait();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			Thread.currentThread().interrupt();
+		}
+		wait = true;
+		return viewFrame.getLastButton();
+	}
+
+	private void switchPlayerPhaseFrame(int opponent) {
+		System.out.println("Spieler " + (opponent + 1) + " ist am Zug!");
+	}
+	
+	public synchronized void setWait(boolean b) {
+		wait = b;
+		notifyAll();
 	}
 }
