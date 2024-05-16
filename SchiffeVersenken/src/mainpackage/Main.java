@@ -18,7 +18,7 @@ public class Main {
 		Game game = new Game(model, view);
 		
 		game.menu();
-
+//		commit test
 //		game.test();
 
 	}
