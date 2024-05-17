@@ -2,6 +2,7 @@ package mainpackage;
 
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Game {
 
@@ -16,6 +17,7 @@ public class Game {
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
 
 	private boolean wait = true;
+	private AtomicBoolean stop = new AtomicBoolean(false);
 
 	public Game(Model model, View view) {
 		this.model = model;
@@ -56,7 +58,8 @@ public class Game {
 	public void menu() {
 
 		// commandline prototyp
-		System.out.println("1) PVP starten\n" + "2) PVE starten\n" + "3) Spielstand laden\n" + "4) viewFrame Test");
+		System.out.println("1) PVP starten\n" + "2) PVE starten\n" + "3) Spielstand laden\n" + "4) viewFrame Test\n"
+				+ "5) viewGraphics Test\n");
 
 		String menuChoice = scanner.next();
 
@@ -72,6 +75,11 @@ public class Game {
 			break;
 		case "4":
 			viewFrame();
+			break;
+		case "5":
+			Runnable runnable = () -> viewGraphics();
+			new Thread(runnable).start();
+			startPVP();
 			break;
 		default:
 			scanner.close();
@@ -361,9 +369,23 @@ public class Game {
 	private void switchPlayerPhaseFrame(int opponent) {
 		System.out.println("Spieler " + (opponent + 1) + " ist am Zug!");
 	}
-	
+
 	public synchronized void setWait(boolean b) {
 		wait = b;
 		notifyAll();
+	}
+
+	private void viewGraphics() {
+		ViewGraphics viewGraphics = new ViewGraphics(model, this);
+		while (!stop.get()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+
+			viewGraphics.refreshGraphics();
+		}
 	}
 }
