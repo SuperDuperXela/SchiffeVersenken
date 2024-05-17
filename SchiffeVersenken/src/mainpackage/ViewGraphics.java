@@ -28,6 +28,10 @@ public class ViewGraphics {
 			frame.requestFocus();
 		});
 	}
+	
+	public void addController(Controller controller) {
+		SwingUtilities.invokeLater(() -> frame.addMouseListener(controller));
+	}
 
 	public void refreshGraphics() {
 		SwingUtilities.invokeLater(() -> zeichenfeld.repaint());

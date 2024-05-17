@@ -377,6 +377,7 @@ public class Game {
 
 	private void viewGraphics() {
 		ViewGraphics viewGraphics = new ViewGraphics(model, this);
+		viewGraphics.addController(new Controller(this));
 		while (!stop.get()) {
 			try {
 				Thread.sleep(1000);
@@ -387,5 +388,11 @@ public class Game {
 
 			viewGraphics.refreshGraphics();
 		}
+	}
+	
+	public void updateLastClick(int x, int y) {
+		x = (x - 38) / 50;
+		y = (y - 67) / 50;
+		System.out.println("Xc: " + x + "  Yc: " + y);
 	}
 }
