@@ -12,12 +12,16 @@ public class Game {
 	private Scanner scanner = new Scanner(System.in);
 
 	private static final int[] SHIPSLENGTH = { 5, 4 };
-	private static final int[] shipsLengthfull = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
+	private static final int[] SHIPSLENGTHFULL = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
 
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
 
 	private boolean wait = true;
 	private AtomicBoolean stop = new AtomicBoolean(false);
+	private AtomicBoolean waitForCellClick = new AtomicBoolean(true);
+
+	private int xCell; // x coordinate of last clicked cell
+	private int yCell;
 
 	public Game(Model model, View view) {
 		this.model = model;
@@ -339,6 +343,7 @@ public class Game {
 				printShipNameMessage(length);
 				System.out.println("Feld anklicken!");
 				int[] coordinates = readInputFrame(viewFrame);
+
 				System.out.println("Ausrichtung eingeben (1 Senkrecht, 2 Waagerecht): ");
 //				int input = scanner.nextInt();
 				int input = 1;
@@ -378,21 +383,64 @@ public class Game {
 	private void viewGraphics() {
 		ViewGraphics viewGraphics = new ViewGraphics(model, this);
 		viewGraphics.addController(new Controller(this));
-		while (!stop.get()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
 
-			viewGraphics.refreshGraphics();
+		Runnable runnable = () -> {
+			while (!stop.get()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+
+				viewGraphics.refreshGraphics();
+			}
+		};
+		new Thread(runnable).start();
+
+		placeShipsPhaseGraphics(0, viewGraphics);
+
+	}
+
+	private void placeShipsPhaseGraphics(int n, ViewGraphics viewGraphics) {
+		System.out.println("Spieler " + (n + 1) + ", platziere deine Schiffe!");
+		for (int length : SHIPSLENGTHFULL) {
+			boolean loop = true;
+			while (loop) {
+				printShipNameMessage(length);
+				System.out.println("Feld anklicken!");
+				while (waitForCellClick.get()) {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						Thread.currentThread().interrupt();
+					}
+				}
+				waitForCellClick.set(true);
+				int xc = xCell;
+				int xy = yCell;
+				System.out.println("Ausrichtung eingeben (1 Senkrecht, 2 Waagerecht): ");
+//				TODO: Ausrichtung erfassen
+				int input = 1;
+				Boolean vertical = (input == 1);
+
+				if (placeShip(n, xc, xy, length, vertical)) {
+					System.out.println("Ungültige Position!");
+				} else {
+					loop = false;
+				}
+			}
 		}
 	}
-	
+
 	public void updateLastClick(int x, int y) {
-		x = (x - 38) / 50;
-		y = (y - 67) / 50;
+		x = (x - 88) / 50;
+		y = (y - 117) / 50;
+		xCell = x;
+		yCell = y;
+		if (xCell < model.getMapSize() && yCell < model.getMapSize() && xCell >= 0 && yCell >= 0)
+			waitForCellClick.set(false);
 		System.out.println("Xc: " + x + "  Yc: " + y);
 	}
 }
