@@ -402,11 +402,51 @@ public class Game {
 
 		placeShipsPhaseGraphics(0, viewGraphics);
 
+		placeShipsPhaseGraphics(1, viewGraphics);
+
+		while (!stop.get()) {
+
+			boolean loop = true;
+
+			while (loop) {
+				System.out.println("Feld anklicken!");
+				while (waitForCellClick.get()) {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						Thread.currentThread().interrupt();
+					}
+				}
+				waitForCellClick.set(true);
+
+				loop = (model.getViewMap(1)[xCell][yCell] == CellType.SHOT_WATER
+						|| model.getViewMap(1)[xCell][yCell] == CellType.SHOT_SHIP
+						|| model.getViewMap(1)[xCell][yCell] == CellType.SUNKEN_SHIP);
+
+			}
+
+			if (model.addShot(1, xCell, yCell)) {
+				// Überprüfe ob Spieler gewonnen hat
+				int counter = 0;
+
+				for (Ship ship : model.getShipLists(1)) {
+					if (ship.isSunken()) {
+						counter += 1;
+					}
+				}
+				if (counter == model.getShipLists(1).size()) {
+					// Spieler hat gewonnen
+					stop.set(true);
+				}
+			}
+		}
+
 	}
 
 	private void placeShipsPhaseGraphics(int n, ViewGraphics viewGraphics) {
 		System.out.println("Spieler " + (n + 1) + ", platziere deine Schiffe!");
-		for (int length : SHIPSLENGTHFULL) {
+		for (int length : SHIPSLENGTH) {
 			boolean loop = true;
 			while (loop) {
 				printShipNameMessage(length);
