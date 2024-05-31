@@ -14,13 +14,15 @@ public class Zeichenfeld extends JPanel {
 	private static final Color BUTTON_FILL_PRESSED= new Color(120, 120, 120);
 
 	private transient Model model;
+	private Game game;
 	private int squareSize = 50;
 	private int startDelta = 30;
 	private boolean buttonsCreated = false;
 
-	public Zeichenfeld(Model model) {
+	public Zeichenfeld(Model model, Game game) {
 		super();
 		this.model = model;
+		this.game = game;
 		this.setLayout(null);
 	}
 
@@ -45,10 +47,26 @@ public class Zeichenfeld extends JPanel {
 		panel.setBounds(0, 0, 1500, 70);
 		
 		JButton verticalButton = new JButton("Vertikal");
+		JButton horizontalButton = new JButton("Horizontal");
+		
 		verticalButton.setBounds(80, 20, 120, 40);
-		verticalButton.setEnabled(true);
+		verticalButton.setEnabled(false);
+		verticalButton.addActionListener(e -> {
+			verticalButton.setEnabled(false);
+			horizontalButton.setEnabled(true);
+			game.setVertical(true);
+		});
+		
+		horizontalButton.setBounds(220, 20, 120, 40);
+		horizontalButton.setEnabled(true);
+		horizontalButton.addActionListener(e -> {
+			verticalButton.setEnabled(true);
+			horizontalButton.setEnabled(false);
+			game.setVertical(false);
+		});
 		
 		panel.add(verticalButton);
+		panel.add(horizontalButton);
 		panel.setLayout(null);
 		panel.setVisible(true);
 		this.add(panel);

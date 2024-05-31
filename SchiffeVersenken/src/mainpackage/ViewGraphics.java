@@ -21,7 +21,7 @@ public class ViewGraphics {
 	private void createWindow() {
 		SwingUtilities.invokeLater(() -> {
 			frame.setSize(1500, 700);
-			zeichenfeld = new Zeichenfeld(model);
+			zeichenfeld = new Zeichenfeld(model, game);
 			frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 			frame.add(zeichenfeld);
 			frame.setVisible(true);

@@ -23,6 +23,8 @@ public class Game {
 	private int xCell; // x coordinate of last clicked cell
 	private int yCell;
 
+	private boolean vertical = true; // vertical / horizontal placement
+
 	public Game(Model model, View view) {
 		this.model = model;
 		this.view = view;
@@ -421,9 +423,6 @@ public class Game {
 				int xc = xCell;
 				int xy = yCell;
 				System.out.println("Ausrichtung eingeben (1 Senkrecht, 2 Waagerecht): ");
-//				TODO: Ausrichtung erfassen
-				int input = 1;
-				Boolean vertical = (input == 1);
 
 				if (placeShip(n, xc, xy, length, vertical)) {
 					System.out.println("Ungültige Position!");
@@ -434,6 +433,11 @@ public class Game {
 		}
 	}
 
+	/**
+	 * @param x
+	 * @param y Rechnet die X und Y Koordinaten vom Fenster in Zellen-Koordinaten
+	 *          um, und speichert diese ab. Verwendet im graphics Modus
+	 */
 	public void updateLastClick(int x, int y) {
 		x = (x - 88) / 50;
 		y = (y - 117) / 50;
@@ -442,5 +446,13 @@ public class Game {
 		if (xCell < model.getMapSize() && yCell < model.getMapSize() && xCell >= 0 && yCell >= 0)
 			waitForCellClick.set(false);
 		System.out.println("Xc: " + x + "  Yc: " + y);
+	}
+
+	/**
+	 * @param bool Ändert den Wert von vertical, welches bestimmt, wie die Schiffe
+	 *             platziert werden im graphics Modus
+	 */
+	public void setVertical(boolean bool) {
+		vertical = bool;
 	}
 }
