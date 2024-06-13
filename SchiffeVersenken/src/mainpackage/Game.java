@@ -20,6 +20,7 @@ public class Game {
 	private AtomicBoolean stop = new AtomicBoolean(false);
 	private AtomicBoolean waitForCellClick = new AtomicBoolean(true);
 
+	private boolean ownField = true; // true if the last clicked cell was on the own field
 	private int xCell; // x coordinate of last clicked cell
 	private int yCell;
 
@@ -85,13 +86,17 @@ public class Game {
 		case "5":
 			Runnable runnable = () -> viewGraphics();
 			new Thread(runnable).start();
-			startPVP();
 			break;
 		default:
 			scanner.close();
 			break;
-
 		}
+
+	}
+
+	public void testStartGraphics() {
+		Runnable runnable = () -> viewGraphics();
+		new Thread(runnable).start();
 	}
 
 	private void startPVP() {
@@ -400,17 +405,24 @@ public class Game {
 		};
 		new Thread(runnable).start();
 
-		placeShipsPhaseGraphics(0, viewGraphics);
+		System.out.println("test 1");
 
+		placeShipsPhaseGraphics(0, viewGraphics);
 		placeShipsPhaseGraphics(1, viewGraphics);
 
+		graphicsGameLoop();
+	}
+
+	private void graphicsGameLoop() {
 		while (!stop.get()) {
 
 			boolean loop = true;
 
 			while (loop) {
 				System.out.println("Feld anklicken!");
-				while (waitForCellClick.get()) {
+
+				// wait for a click, that is on the opponents field
+				while (waitForCellClick.get() || ownField) {
 					try {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
@@ -441,7 +453,6 @@ public class Game {
 				}
 			}
 		}
-
 	}
 
 	private void placeShipsPhaseGraphics(int n, ViewGraphics viewGraphics) {
@@ -451,7 +462,7 @@ public class Game {
 			while (loop) {
 				printShipNameMessage(length);
 				System.out.println("Feld anklicken!");
-				while (waitForCellClick.get()) {
+				while (waitForCellClick.get() || !ownField) {
 					try {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
@@ -479,8 +490,16 @@ public class Game {
 	 *          um, und speichert diese ab. Verwendet im graphics Modus
 	 */
 	public void updateLastClick(int x, int y) {
-		x = (x - 88) / 50;
-		y = (y - 117) / 50;
+		if (x > 688) {
+			ownField = false;
+			x = (x - 88 - 600) / 50;
+			y = (y - 117) / 50;
+		} else {
+			ownField = true;
+			x = (x - 88) / 50;
+			y = (y - 117) / 50;
+		}
+
 		xCell = x;
 		yCell = y;
 		if (xCell < model.getMapSize() && yCell < model.getMapSize() && xCell >= 0 && yCell >= 0)

@@ -7,11 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class Zeichenfeld extends JPanel {
-	
-	private static final Color BUTTON_OUTLINE = new Color(50, 50, 50);
-	private static final Color BUTTON_OUTLINE_PRESSED = new Color(100, 50, 50);
-	private static final Color BUTTON_FILL= new Color(150, 150, 150);
-	private static final Color BUTTON_FILL_PRESSED= new Color(120, 120, 120);
 
 	private transient Model model;
 	private Game game;

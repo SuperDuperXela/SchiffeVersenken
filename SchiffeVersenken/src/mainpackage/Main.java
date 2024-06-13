@@ -3,9 +3,11 @@ package mainpackage;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
+import mainmenu.MainMenu;
+
 public class Main {
 
-	public static void main(String[] args) {
+	public static void oldMainFunction() {
 
 		try {
 			System.setOut(new PrintStream(System.out, true, "UTF-8"));
@@ -13,11 +15,13 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		Model model = new Model();
-		View view = new View(model);
-		Game game = new Game(model, view);
+//		Model model = new Model();
+//		View view = new View(model);
+//		Game game = new Game(model, view);
 		
-		game.menu();
+//		MainMenu.createMenuWindow();
+		
+//		game.menu();
 //		commit test
 //		game.test();
 
