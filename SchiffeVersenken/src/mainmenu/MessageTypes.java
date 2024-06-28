@@ -1,17 +1,21 @@
 package mainmenu;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum MessageTypes {
-	SERVER_CLOSING(0), //
-	CLIENT_DISCONNECT(1), //
-	PING(2), //
-	CHAT_MESSAGE(10), //
-	GAME_OPTIONS(11), //
-	READY(12), //
-	GAME_DATA(21), //
-	CLIENT_INPUT(22);
+public enum MessageTypes implements Serializable{
+	SERVER_CLOSING(0), // Server schlieﬂt
+	CLIENT_DISCONNECT(1), // Client hat die Verbindung zum Server unterbrochen
+	PING(2), // Ping Test
+	CHAT_MESSAGE(10), // Chat Nachricht
+	READY(11), // Client ist bereit zum Spielstart
+	UNREADY(12), //Client ist nicht mehr bereit
+	GAME_START(20), // Spielstart signalisieren
+	GAME_START_DATA(21), // Schiffe vom Client
+	GAME_DATA(22), // Spieldaten (alle Schiffe) schicken
+	GAME_END(23), // Spielende signalisieren
+	CLIENT_INPUT(29); // wird wahrscheinlich nicht benutzt
 
 	public final byte messageType;
 

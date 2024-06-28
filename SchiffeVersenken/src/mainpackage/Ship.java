@@ -1,7 +1,13 @@
 package mainpackage;
 
-public class Ship {
+import java.io.Serializable;
 
+public class Ship implements Serializable {
+
+	/**
+	 * generated ID
+	 */
+	private static final long serialVersionUID = -6691351843204603196L;
 	/**
 	 * length of the ship
 	 */

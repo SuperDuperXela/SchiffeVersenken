@@ -1,10 +1,15 @@
 package mainpackage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model {
+public class Model implements Serializable {
 
+	/**
+	 * generated ID
+	 */
+	private static final long serialVersionUID = 6313626968133639143L;
 	/**
 	 * map containing all ship segments of a player
 	 */
@@ -13,7 +18,6 @@ public class Model {
 	 * list containing all ship objects of a player
 	 */
 	private ArrayList<ArrayList<Ship>> shipLists = new ArrayList<>();
-	
 
 	/**
 	 * map to be displayed to a player
@@ -80,6 +84,24 @@ public class Model {
 		return viewMaps.get(n);
 	}
 
+	public List<CellType[][]> getViewMapsCopy() {
+		ArrayList<CellType[][]> list = new ArrayList<>(viewMaps.size());
+		list.addAll(viewMaps);
+		return list;
+	}
+
+	public void updateShipMaps(ArrayList<Ship[][]> list) {
+		shipMaps = list;
+	}
+	
+	public void updateshipLists(ArrayList<ArrayList<Ship>> list) {
+		shipLists = list;
+	}
+	
+	public void updateViewMaps(ArrayList<CellType[][]> list) {
+		viewMaps = list;
+	}
+
 	/**
 	 * adds a shot to the given x and y coordinates in the ship and view maps and
 	 * checks if a ship was sunken
@@ -132,6 +154,7 @@ public class Model {
 	 * @param n player ID
 	 */
 	private void fillViewMapWithWater(int n) {
+		System.out.println("DEBUG: Model fill water " + n);
 		for (int i = 0; i < getViewMap(n).length; i++) {
 			for (int j = 0; j < getViewMap(n).length; j++) {
 				getViewMap(n)[i][j] = CellType.WATER;
@@ -149,5 +172,5 @@ public class Model {
 	public ArrayList<Ship> getShipLists(int m) {
 		return shipLists.get(m);
 	}
-	
+
 }

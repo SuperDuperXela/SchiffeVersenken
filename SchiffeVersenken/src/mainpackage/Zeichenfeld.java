@@ -30,7 +30,7 @@ public class Zeichenfeld extends JPanel {
 		
 		
 		paintShipMap(g, map, 0);
-		paintShootMap(g, map2, mapOffsetX);
+		paintShootMapDEBUG(g, map2, mapOffsetX);
 		if (!buttonsCreated) {
 			createButtons();
 			buttonsCreated = true;
@@ -129,6 +129,39 @@ public class Zeichenfeld extends JPanel {
 				switch (cell) {
 				case SHIP:
 					paintCell(g, Color.BLUE, x, y, cellOffsetX);
+					break;
+				case SHOT_SHIP:
+					paintCell(g, Color.DARK_GRAY, x, y, cellOffsetX);
+					break;
+				case SHOT_WATER:
+					paintCell(g, Color.CYAN, x, y, cellOffsetX);
+					break;
+				case SUNKEN_SHIP:
+					paintCell(g, Color.RED, x, y, cellOffsetX);
+					break;
+				case WATER:
+					paintCell(g, Color.BLUE, x, y, cellOffsetX);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	
+	private void paintShootMapDEBUG(Graphics g, CellType[][] map, int mapOffsetX) {
+		int cellOffsetX = startDelta + mapOffsetX;
+		int x = 0;
+		for (CellType[] row : map) {
+			x += 1;
+			int y = 0;
+			for (CellType cell : row) {
+				y += 1;
+				g.setColor(Color.BLACK);
+				g.drawRect(cellOffsetX + squareSize * x - 1, startDelta + squareSize * y - 1, squareSize, squareSize);
+				switch (cell) {
+				case SHIP:
+					paintCell(g, Color.YELLOW, x, y, cellOffsetX);
 					break;
 				case SHOT_SHIP:
 					paintCell(g, Color.DARK_GRAY, x, y, cellOffsetX);

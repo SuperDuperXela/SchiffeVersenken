@@ -29,6 +29,11 @@ public class JoinRoomMenu {
 		pingButton.setBounds(50, 100, 100, 50);
 		pingButton.addActionListener(e -> ping());
 		mainPanel.add(pingButton);
+		
+		JButton readyButton = new JButton("Ready!");
+		readyButton.setBounds(50, 150, 100, 50);
+		readyButton.addActionListener(e -> ready());
+		mainPanel.add(readyButton);
 
 		frame.add(mainPanel);
 		frame.setVisible(true);
@@ -38,14 +43,18 @@ public class JoinRoomMenu {
 		Runnable runnable = () -> {
 			client = new Client();
 			client.startConnection("localhost", 5555); // "127.0.0.1"
+			client.start();
 		};
 		new Thread(runnable).start();
-//		System.out.println("sendMSG");
-//		client.sendMessage("");
 	}
 
 	private void ping() {
 		System.out.println("JoinRoom: sendMSG");
-		client.sendMessage("");
+		client.sendMessage(MessageTypes.PING);
+	}
+	
+	private void ready() {
+		System.out.println("JoinRoom: ready");
+		client.sendMessage(MessageTypes.READY);
 	}
 }

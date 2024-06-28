@@ -1,8 +1,11 @@
 package mainpackage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import mainmenu.Client;
 
 public class Game {
 
@@ -98,7 +101,17 @@ public class Game {
 		Runnable runnable = () -> viewGraphics();
 		new Thread(runnable).start();
 	}
+	
+	public void startOnlinePVPHost() {
+		Runnable runnable = () -> viewGrapicsOnlinePVPHost();
+		new Thread(runnable).start();
+	}
 
+	public void startOnlinePVPClient(Client client) {
+		Runnable runnable = () -> viewGrapicsOnlinePVPClient(client);
+		new Thread(runnable).start();
+	}
+	
 	private void startPVP() {
 		view.printShipMap(0);
 		placeShipsPhase(0);
@@ -405,11 +418,57 @@ public class Game {
 		};
 		new Thread(runnable).start();
 
-		System.out.println("test 1");
-
 		placeShipsPhaseGraphics(0, viewGraphics);
 		placeShipsPhaseGraphics(1, viewGraphics);
 
+		graphicsGameLoop();
+	}
+	
+	private void viewGrapicsOnlinePVPHost() {
+		ViewGraphics viewGraphics = new ViewGraphics(model, this);
+		viewGraphics.addController(new Controller(this));
+		
+		Runnable runnable = () -> {
+			while (!stop.get()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+
+				viewGraphics.refreshGraphics();
+			}
+		};
+		new Thread(runnable).start();
+		
+		placeShipsPhaseGraphics(0, viewGraphics);
+		
+		graphicsGameLoop();
+	}
+	
+	private void viewGrapicsOnlinePVPClient(Client client) {
+		ViewGraphics viewGraphics = new ViewGraphics(model, this);
+		viewGraphics.addController(new Controller(this));
+		
+		Runnable runnable = () -> {
+			while (!stop.get()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+
+				viewGraphics.refreshGraphics();
+			}
+		};
+		new Thread(runnable).start();
+		
+		placeShipsPhaseGraphics(0, viewGraphics);
+		
+		client.sendGameStartData(model);
+		
 		graphicsGameLoop();
 	}
 
