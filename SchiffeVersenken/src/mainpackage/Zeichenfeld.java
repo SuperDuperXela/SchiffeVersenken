@@ -27,8 +27,7 @@ public class Zeichenfeld extends JPanel {
 		CellType[][] map = model.getViewMap(0);
 		CellType[][] map2 = model.getViewMap(1);
 		int mapOffsetX = squareSize * (model.getMapSize() + 2);
-		
-		
+
 		paintShipMap(g, map, 0);
 		paintShootMapDEBUG(g, map2, mapOffsetX);
 		if (!buttonsCreated) {
@@ -36,14 +35,14 @@ public class Zeichenfeld extends JPanel {
 			buttonsCreated = true;
 		}
 	}
-	
+
 	private void createButtons() {
 		JPanel panel = new JPanel();
 		panel.setBounds(0, 0, 1500, 70);
-		
+
 		JButton verticalButton = new JButton("Vertikal");
 		JButton horizontalButton = new JButton("Horizontal");
-		
+
 		verticalButton.setBounds(80, 20, 120, 40);
 		verticalButton.setEnabled(false);
 		verticalButton.addActionListener(e -> {
@@ -51,7 +50,7 @@ public class Zeichenfeld extends JPanel {
 			horizontalButton.setEnabled(true);
 			game.setVertical(true);
 		});
-		
+
 		horizontalButton.setBounds(220, 20, 120, 40);
 		horizontalButton.setEnabled(true);
 		horizontalButton.addActionListener(e -> {
@@ -59,28 +58,24 @@ public class Zeichenfeld extends JPanel {
 			horizontalButton.setEnabled(false);
 			game.setVertical(false);
 		});
-		
+
 		panel.add(verticalButton);
 		panel.add(horizontalButton);
 		panel.setLayout(null);
 		panel.setVisible(true);
 		this.add(panel);
 	}
-	
-	private void paintButtons(Graphics g) {
-			
-		/*
-		g.setColor(BUTTON_FILL);
-		g.fillRect(80, 20, 120, 50);
-		g.setColor(BUTTON_OUTLINE);
-		g.drawRect(80, 20, 120, 50);
-		
 
-		g.setColor(BUTTON_OUTLINE_PRESSED);
-		g.fillRect(280 - 2, 20 - 2, 120 + 4, 50 + 4);
-		g.setColor(BUTTON_FILL_PRESSED);
-		g.fillRect(280, 20, 120, 50);
-		*/
+	private void paintButtons(Graphics g) {
+
+		/*
+		 * g.setColor(BUTTON_FILL); g.fillRect(80, 20, 120, 50);
+		 * g.setColor(BUTTON_OUTLINE); g.drawRect(80, 20, 120, 50);
+		 * 
+		 * 
+		 * g.setColor(BUTTON_OUTLINE_PRESSED); g.fillRect(280 - 2, 20 - 2, 120 + 4, 50 +
+		 * 4); g.setColor(BUTTON_FILL_PRESSED); g.fillRect(280, 20, 120, 50);
+		 */
 	}
 
 	private void paintShipMap(Graphics g, CellType[][] map, int mapOffsetX) {
@@ -148,7 +143,7 @@ public class Zeichenfeld extends JPanel {
 			}
 		}
 	}
-	
+
 	private void paintShootMapDEBUG(Graphics g, CellType[][] map, int mapOffsetX) {
 		int cellOffsetX = startDelta + mapOffsetX;
 		int x = 0;

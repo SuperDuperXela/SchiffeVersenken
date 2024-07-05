@@ -80,7 +80,7 @@ public class HostServer {
 		}
 
 		private static void clientSwitchReadyStatus() {
-			createRoomMenu.switchClienReadyStatus();
+			createRoomMenu.switchClientReadyStatus();
 		}
 
 		@Override
@@ -110,12 +110,14 @@ public class HostServer {
 					case CLIENT_INPUT:
 						break;
 					case GAME_DATA:
+						Model modelData = (Model) ois.readObject();
+						createRoomMenu.handleGameData(modelData);
 						break;
 					case GAME_END:
 						break;
 					case GAME_START_DATA:
-						Model model = (Model) ois.readObject();
-						createRoomMenu.handleStartGameData(model);
+						Model modelStart = (Model) ois.readObject();
+						createRoomMenu.handleStartGameData(modelStart);
 						break;
 					case READY:
 						System.out.println("Host: Client switched ready status.");
@@ -149,6 +151,7 @@ public class HostServer {
 				oos.flush();
 				oos.writeObject(model);
 				oos.flush();
+				oos.reset();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -156,20 +159,11 @@ public class HostServer {
 
 		public void sendGameData(Model model) {
 			try {
-				System.out.println("0 beim senden:");
-				for (CellType[] row : model.getViewMap(0)) {
-					System.out.println(Arrays.toString(row));
-				}
-				System.out.println("1:");
-				for (CellType[] row : model.getViewMap(1)) {
-					System.out.println(Arrays.toString(row));
-				}
-				
-				
 				oos.writeByte(MessageTypes.GAME_DATA.getMessageType());
 				oos.flush();
 				oos.writeObject(model);
 				oos.flush();
+				oos.reset();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

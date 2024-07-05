@@ -6,6 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import mainmenu.Client;
+import mainmenu.CreateRoomMenu;
 
 public class Game {
 
@@ -22,6 +23,7 @@ public class Game {
 	private boolean wait = true;
 	private AtomicBoolean stop = new AtomicBoolean(false);
 	private AtomicBoolean waitForCellClick = new AtomicBoolean(true);
+	private AtomicBoolean waitForOtherPlayer = new AtomicBoolean(true);
 
 	private boolean ownField = true; // true if the last clicked cell was on the own field
 	private int xCell; // x coordinate of last clicked cell
@@ -101,9 +103,9 @@ public class Game {
 		Runnable runnable = () -> viewGraphics();
 		new Thread(runnable).start();
 	}
-	
-	public void startOnlinePVPHost() {
-		Runnable runnable = () -> viewGrapicsOnlinePVPHost();
+
+	public void startOnlinePVPHost(CreateRoomMenu room) {
+		Runnable runnable = () -> viewGrapicsOnlinePVPHost(room);
 		new Thread(runnable).start();
 	}
 
@@ -111,7 +113,7 @@ public class Game {
 		Runnable runnable = () -> viewGrapicsOnlinePVPClient(client);
 		new Thread(runnable).start();
 	}
-	
+
 	private void startPVP() {
 		view.printShipMap(0);
 		placeShipsPhase(0);
@@ -423,11 +425,11 @@ public class Game {
 
 		graphicsGameLoop();
 	}
-	
-	private void viewGrapicsOnlinePVPHost() {
+
+	private void viewGrapicsOnlinePVPHost(CreateRoomMenu room) {
 		ViewGraphics viewGraphics = new ViewGraphics(model, this);
 		viewGraphics.addController(new Controller(this));
-		
+
 		Runnable runnable = () -> {
 			while (!stop.get()) {
 				try {
@@ -441,16 +443,41 @@ public class Game {
 			}
 		};
 		new Thread(runnable).start();
-		
+
 		placeShipsPhaseGraphics(0, viewGraphics);
-		
-		graphicsGameLoop();
+
+		// wait until other players ships were sent
+		while (waitForOtherPlayer.get()) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+		}
+		waitForOtherPlayer.set(true);
+
+		while (!stop.get()) {
+			graphicsGameShoot();
+			room.sendGameData();
+			
+			// wait until other players shoots
+			while (waitForOtherPlayer.get()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}
+			waitForOtherPlayer.set(true);
+		}
 	}
-	
+
 	private void viewGrapicsOnlinePVPClient(Client client) {
 		ViewGraphics viewGraphics = new ViewGraphics(model, this);
 		viewGraphics.addController(new Controller(this));
-		
+
 		Runnable runnable = () -> {
 			while (!stop.get()) {
 				try {
@@ -464,12 +491,25 @@ public class Game {
 			}
 		};
 		new Thread(runnable).start();
-		
+
 		placeShipsPhaseGraphics(0, viewGraphics);
-		
+
 		client.sendGameStartData(model);
-		
-		graphicsGameLoop();
+
+		while (!stop.get()) {
+			// wait until other players makes his first shot
+			while (waitForOtherPlayer.get()) {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}
+			waitForOtherPlayer.set(true);
+			graphicsGameShoot();
+			client.sendGameData(model);
+		}
 	}
 
 	private void graphicsGameLoop() {
@@ -511,7 +551,49 @@ public class Game {
 					stop.set(true);
 				}
 			}
+
 		}
+	}
+
+	private void graphicsGameShoot() {
+
+		boolean loop = true;
+
+		while (loop) {
+			System.out.println("Feld anklicken!");
+
+			// wait for a click, that is on the opponents field
+			while (waitForCellClick.get() || ownField) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					Thread.currentThread().interrupt();
+				}
+			}
+			waitForCellClick.set(true);
+
+			loop = (model.getViewMap(1)[xCell][yCell] == CellType.SHOT_WATER
+					|| model.getViewMap(1)[xCell][yCell] == CellType.SHOT_SHIP
+					|| model.getViewMap(1)[xCell][yCell] == CellType.SUNKEN_SHIP);
+
+		}
+
+		if (model.addShot(1, xCell, yCell)) {
+			// Überprüfe ob Spieler gewonnen hat
+			int counter = 0;
+
+			for (Ship ship : model.getShipLists(1)) {
+				if (ship.isSunken()) {
+					counter += 1;
+				}
+			}
+			if (counter == model.getShipLists(1).size()) {
+				// Spieler hat gewonnen
+				stop.set(true);
+			}
+		}
+
 	}
 
 	private void placeShipsPhaseGraphics(int n, ViewGraphics viewGraphics) {
@@ -572,5 +654,13 @@ public class Game {
 	 */
 	public void setVertical(boolean bool) {
 		vertical = bool;
+	}
+
+	/**
+	 * @param bool Ändert den Wert von waitForShips, welches bestimmt, wann Spieler
+	 *             1 die Game Loop anfangen darf
+	 */
+	public void setWaitForOtherPlayer(boolean bool) {
+		waitForOtherPlayer.set(bool);
 	}
 }

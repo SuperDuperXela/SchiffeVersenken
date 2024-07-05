@@ -22,6 +22,8 @@ public class Client extends Thread {
 	private ObjectInputStream ois;
 //	private BufferedReader in;
 
+	private boolean active = true;
+
 	public void startConnection(String ip, int port) {
 		try {
 			clientSocket = new Socket(ip, port);
@@ -37,12 +39,10 @@ public class Client extends Thread {
 	public void run() {
 		Model model = new Model();
 		View view;
-		Game game;
-		int test = 0;
+		Game game = null;
 		try {
 //			ObjectInputStream oisRun = new ObjectInputStream(clientSocket.getInputStream());
-			while (test < 5) {
-				test += 1;
+			while (active) {
 				System.out.println("Client: readingByte");
 				byte b;
 				b = ois.readByte();
@@ -54,52 +54,39 @@ public class Client extends Thread {
 					model = (Model) ois.readObject();
 					view = new View(model);
 					game = new Game(model, view);
-					
+
 					game.startOnlinePVPClient(this);
 					break;
 				case GAME_DATA:
 					Model otherModel = (Model) ois.readObject();
-					
-					//update viewMaps
+
+					// update viewMaps
 					ArrayList<CellType[][]> listo = new ArrayList<>();
 					listo.add(otherModel.getViewMap(1));
 					listo.add(otherModel.getViewMap(0));
-					
-					System.out.println("listo 0 :");
-					for (CellType[] row : listo.get(0)) {
-						System.out.println(Arrays.toString(row));
-					}
-					System.out.println("listo 1 :");
-					for (CellType[] row : listo.get(1)) {
-						System.out.println(Arrays.toString(row));
-					}
-					
-					System.out.println("0 :");
-					for (CellType[] row : otherModel.getViewMap(0)) {
-						System.out.println(Arrays.toString(row));
-					}
-					
-					System.out.println("1 :");
-					for (CellType[] row : otherModel.getViewMap(1)) {
-						System.out.println(Arrays.toString(row));
-					}
-					
+
 					model.updateViewMaps(listo);
-					
-					//update shipMaps
+
+					// update shipMaps
 					ArrayList<Ship[][]> shipMaps = new ArrayList<>();
 					shipMaps.add(otherModel.getShipMap(1));
 					shipMaps.add(otherModel.getShipMap(0));
 					model.updateShipMaps(shipMaps);
-					
-					//update shipLists
+
+					// update shipLists
 					ArrayList<ArrayList<Ship>> shipLists = new ArrayList<>();
 					shipLists.add(otherModel.getShipLists(1));
 					shipLists.add(otherModel.getShipLists(0));
 					model.updateshipLists(shipLists);
-					
+
+					if (game != null) {
+						game.setWaitForOtherPlayer(false);
+					}
+
 					break;
 				case GAME_END:
+					// TODO
+					active = false;
 					break;
 				default:
 					break;
@@ -158,13 +145,26 @@ public class Client extends Thread {
 		}
 		return null;
 	}
-	
+
 	public void sendGameStartData(Model model) {
 		try {
 			oos.writeByte(MessageTypes.GAME_START_DATA.getMessageType());
 			oos.flush();
 			oos.writeObject(model);
 			oos.flush();
+			oos.reset();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendGameData(Model model) {
+		try {
+			oos.writeByte(MessageTypes.GAME_DATA.getMessageType());
+			oos.flush();
+			oos.writeObject(model);
+			oos.flush();
+			oos.reset();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

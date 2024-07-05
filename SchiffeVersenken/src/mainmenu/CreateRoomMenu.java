@@ -2,7 +2,6 @@ package mainmenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,6 +31,8 @@ public class CreateRoomMenu {
 	private boolean clientReady = false;
 
 	private Model model;
+
+	private Game game;
 
 	public CreateRoomMenu() {
 
@@ -106,14 +107,14 @@ public class CreateRoomMenu {
 	private void startGame() {
 		model = new Model();
 		View view = new View(model);
-		Game game = new Game(model, view);
+		game = new Game(model, view);
 
 		server.sendStartGame(model);
 
-		game.startOnlinePVPHost();
+		game.startOnlinePVPHost(this);
 	}
 
-	public void switchClienReadyStatus() {
+	public void switchClientReadyStatus() {
 		if (!clientReady) {
 			clientReady = true;
 		} else {
@@ -126,45 +127,52 @@ public class CreateRoomMenu {
 	}
 
 	public void handleStartGameData(Model otherModel) {
-		//update viewMaps
+		// update viewMaps
 		ArrayList<CellType[][]> listo = new ArrayList<>();
 		listo.add(model.getViewMap(0));
 		listo.add(otherModel.getViewMap(0));
 		model.updateViewMaps(listo);
-		
-		for (CellType[] row : model.getViewMap(0)) {
-			System.out.println(Arrays.toString(row));
-		}
-		System.out.println("1:");
-		for (CellType[] row : model.getViewMap(1)) {
-			System.out.println(Arrays.toString(row));
-		}
-		
-		//updae shipMaps
+
+		// update shipMaps
 		ArrayList<Ship[][]> shipMaps = new ArrayList<>();
 		shipMaps.add(model.getShipMap(0));
 		shipMaps.add(otherModel.getShipMap(0));
 		model.updateShipMaps(shipMaps);
-		
-		//update shipLists
+
+		// update shipLists
 		ArrayList<ArrayList<Ship>> shipLists = new ArrayList<>();
 		shipLists.add(model.getShipLists(0));
 		shipLists.add(otherModel.getShipLists(0));
 		model.updateshipLists(shipLists);
-		
-		sendGameData();
+
+		game.setWaitForOtherPlayer(false);
+
+//		sendGameData();
 	}
 	
+	public void handleGameData(Model otherModel) {
+		// update viewMaps
+		ArrayList<CellType[][]> listo = new ArrayList<>();
+		listo.add(otherModel.getViewMap(1));
+		listo.add(otherModel.getViewMap(0));
+		model.updateViewMaps(listo);
+
+		// update shipMaps
+		ArrayList<Ship[][]> shipMaps = new ArrayList<>();
+		shipMaps.add(otherModel.getShipMap(1));
+		shipMaps.add(otherModel.getShipMap(0));
+		model.updateShipMaps(shipMaps);
+
+		// update shipLists
+		ArrayList<ArrayList<Ship>> shipLists = new ArrayList<>();
+		shipLists.add(otherModel.getShipLists(1));
+		shipLists.add(otherModel.getShipLists(0));
+		model.updateshipLists(shipLists);
+
+		game.setWaitForOtherPlayer(false);
+	}
+
 	public void sendGameData() {
 		server.sendGameData(model);
-
-		System.out.println("0 nach send:");
-		for (CellType[] row : model.getViewMap(0)) {
-			System.out.println(Arrays.toString(row));
-		}
-		System.out.println("1:");
-		for (CellType[] row : model.getViewMap(1)) {
-			System.out.println(Arrays.toString(row));
-		}
 	}
 }

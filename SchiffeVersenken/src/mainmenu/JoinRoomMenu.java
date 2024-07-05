@@ -28,6 +28,7 @@ public class JoinRoomMenu {
 		JButton pingButton = new JButton("Ping!");
 		pingButton.setBounds(50, 100, 100, 50);
 		pingButton.addActionListener(e -> ping());
+		pingButton.setEnabled(false);
 		mainPanel.add(pingButton);
 		
 		JButton readyButton = new JButton("Ready!");
