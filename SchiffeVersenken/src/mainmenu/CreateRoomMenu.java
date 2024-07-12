@@ -36,7 +36,7 @@ public class CreateRoomMenu {
 
 	public CreateRoomMenu() {
 
-		JFrame frame = new JFrame("Create room");
+		JFrame frame = new JFrame("Raum erstellen");
 		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		frame.setLayout(null);
 
@@ -44,12 +44,12 @@ public class CreateRoomMenu {
 		mainPanel.setBounds(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		mainPanel.setLayout(null);
 
-		testLabel = new JLabel("cool");
-		testLabel.setBounds(30, 30, 100, 20);
+		testLabel = new JLabel("");
+		testLabel.setBounds(30, 30, 150, 20);
 		mainPanel.add(testLabel);
 
-		JButton createRoomButton = new JButton("Create!");
-		createRoomButton.setBounds(50, 50, 100, 50);
+		JButton createRoomButton = new JButton("Raum öffnen!");
+		createRoomButton.setBounds(50, 50, 150, 50);
 		createRoomButton.addActionListener(e -> {
 			createRoom();
 			createRoomButton.setEnabled(false);
@@ -57,8 +57,8 @@ public class CreateRoomMenu {
 		});
 		mainPanel.add(createRoomButton);
 
-		closeRoomButton = new JButton("Close!");
-		closeRoomButton.setBounds(50, 100, 100, 50);
+		closeRoomButton = new JButton("Raum schließen!");
+		closeRoomButton.setBounds(50, 100, 150, 50);
 		closeRoomButton.setEnabled(false);
 		closeRoomButton.addActionListener(e -> {
 			closeRoom();
@@ -67,8 +67,8 @@ public class CreateRoomMenu {
 		});
 		mainPanel.add(closeRoomButton);
 
-		readyButton = new JButton("Ready!");
-		readyButton.setBounds(50, 150, 100, 50);
+		readyButton = new JButton("Bereit!");
+		readyButton.setBounds(50, 150, 150, 50);
 		readyButton.addActionListener(e -> ready());
 		mainPanel.add(readyButton);
 

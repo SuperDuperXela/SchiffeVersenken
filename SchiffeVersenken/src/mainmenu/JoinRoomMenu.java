@@ -3,11 +3,13 @@ package mainmenu;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class JoinRoomMenu {
 
 	private static final int WINDOW_WIDTH = 900;
 	private static final int WINDOW_HEIGHT = 600;
+	private JTextField ipAdressField;
 
 	Client client;
 
@@ -35,6 +37,11 @@ public class JoinRoomMenu {
 		readyButton.setBounds(50, 150, 100, 50);
 		readyButton.addActionListener(e -> ready());
 		mainPanel.add(readyButton);
+		
+		ipAdressField = new JTextField("localhost");
+		ipAdressField.setBounds(180, 50, 120, 40);
+		ipAdressField.setToolTipText("IP Adresse");
+		mainPanel.add(ipAdressField);
 
 		frame.add(mainPanel);
 		frame.setVisible(true);
@@ -43,7 +50,9 @@ public class JoinRoomMenu {
 	private void connect() {
 		Runnable runnable = () -> {
 			client = new Client();
-			client.startConnection("localhost", 5555); // "127.0.0.1"
+			
+			String targetIP = ipAdressField.getText();
+			client.startConnection(targetIP, 5555); // "127.0.0.1"
 			client.start();
 		};
 		new Thread(runnable).start();
