@@ -25,10 +25,13 @@ public class HostServer {
 
 	public void start(int port) {
 		try {
+			System.out.println("DEBUG HostServer: Creating ServerSocket on " + port);
 			serverSocket = new ServerSocket(port);
 			while (active) {
 				HostClientHandler clientHandler = new HostClientHandler(null);
+				System.out.println("DEBUG HostServer: Waiting for connection...");
 				clientHandler.setSocket(serverSocket.accept());
+				System.out.println("DEBUG HostServer: Connected");
 				clientHandler.start();
 				clientHandlers.add(clientHandler);
 			}
@@ -86,6 +89,8 @@ public class HostServer {
 		@Override
 		public void run() {
 			try {
+				//TODO debug
+				System.out.println("DEBUG HostClientHandler: start");
 				oos = new ObjectOutputStream(clientSocket.getOutputStream());
 				ois = new ObjectInputStream(clientSocket.getInputStream());
 //				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));

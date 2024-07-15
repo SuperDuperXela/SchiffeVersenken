@@ -36,4 +36,8 @@ public class ViewGraphics {
 	public void refreshGraphics() {
 		SwingUtilities.invokeLater(() -> zeichenfeld.repaint());
 	}
+	
+	public void startAnimation(int animation) {
+		zeichenfeld.startAnimation(animation);
+	}
 }

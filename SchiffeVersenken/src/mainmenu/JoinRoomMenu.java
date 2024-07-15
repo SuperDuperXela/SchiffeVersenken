@@ -26,12 +26,6 @@ public class JoinRoomMenu {
 		joinRoomButton.setBounds(50, 50, 100, 50);
 		joinRoomButton.addActionListener(e -> connect());
 		mainPanel.add(joinRoomButton);
-
-		JButton pingButton = new JButton("Ping!");
-		pingButton.setBounds(50, 100, 100, 50);
-		pingButton.addActionListener(e -> ping());
-		pingButton.setEnabled(false);
-		mainPanel.add(pingButton);
 		
 		JButton readyButton = new JButton("Ready!");
 		readyButton.setBounds(50, 150, 100, 50);
@@ -40,7 +34,7 @@ public class JoinRoomMenu {
 		
 		ipAdressField = new JTextField("localhost");
 		ipAdressField.setBounds(180, 50, 120, 40);
-		ipAdressField.setToolTipText("IP Adresse");
+		ipAdressField.setToolTipText("IP Adresse vom Raum Ersteller, leer lassen für lokalen Host");
 		mainPanel.add(ipAdressField);
 
 		frame.add(mainPanel);
@@ -48,23 +42,25 @@ public class JoinRoomMenu {
 	}
 
 	private void connect() {
+		System.out.println("DEBUG JoinRoomMenu: connect()");
+		
 		Runnable runnable = () -> {
 			client = new Client();
 			
 			String targetIP = ipAdressField.getText();
+			if (targetIP.equals("")) {
+				targetIP = "localhost";
+			}
 			client.startConnection(targetIP, 5555); // "127.0.0.1"
 			client.start();
 		};
 		new Thread(runnable).start();
 	}
-
-	private void ping() {
-		System.out.println("JoinRoom: sendMSG");
-		client.sendMessage(MessageTypes.PING);
-	}
 	
 	private void ready() {
-		System.out.println("JoinRoom: ready");
-		client.sendMessage(MessageTypes.READY);
+		if (client != null) {
+			System.out.println("JoinRoom: ready");
+			client.sendMessage(MessageTypes.READY);
+		}
 	}
 }

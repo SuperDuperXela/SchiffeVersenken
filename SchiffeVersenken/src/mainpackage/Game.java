@@ -15,7 +15,7 @@ public class Game {
 
 	private Scanner scanner = new Scanner(System.in);
 
-	private static final int[] SHIPSLENGTH = { 5, 4 };
+	private static final int[] SHIPSLENGTH = { 5, 2 };
 	private static final int[] SHIPSLENGTHFULL = { 5, 4, 4, 3, 3, 3, 2, 2, 2, 2 };
 
 	private static HashMap<Character, Integer> coordinatesMap = new HashMap<>();
@@ -458,9 +458,9 @@ public class Game {
 		waitForOtherPlayer.set(true);
 
 		while (!stop.get()) {
-			graphicsGameShoot();
+			graphicsGameShoot(viewGraphics);
 			room.sendGameData();
-			
+
 			// wait until other players shoots
 			while (waitForOtherPlayer.get()) {
 				try {
@@ -507,7 +507,7 @@ public class Game {
 				}
 			}
 			waitForOtherPlayer.set(true);
-			graphicsGameShoot();
+			graphicsGameShoot(viewGraphics);
 			client.sendGameData(model);
 		}
 	}
@@ -555,7 +555,7 @@ public class Game {
 		}
 	}
 
-	private void graphicsGameShoot() {
+	private void graphicsGameShoot(ViewGraphics viewGraphics) {
 
 		boolean loop = true;
 
@@ -580,6 +580,11 @@ public class Game {
 		}
 
 		if (model.addShot(1, xCell, yCell)) {
+			// Schiff wurde versunken
+
+			// Animation spielen
+			viewGraphics.startAnimation(1);
+
 			// Überprüfe ob Spieler gewonnen hat
 			int counter = 0;
 
@@ -589,6 +594,7 @@ public class Game {
 				}
 			}
 			if (counter == model.getShipLists(1).size()) {
+				viewGraphics.startAnimation(2);
 				// Spieler hat gewonnen
 				stop.set(true);
 			}
@@ -643,8 +649,13 @@ public class Game {
 
 		xCell = x;
 		yCell = y;
-		if (xCell < model.getMapSize() && yCell < model.getMapSize() && xCell >= 0 && yCell >= 0)
-			waitForCellClick.set(false);
+
+		waitForCellClick.set(!(xCell < model.getMapSize() && yCell < model.getMapSize() && xCell >= 0 && yCell >= 0));
+		/*
+		 * if (xCell < model.getMapSize() && yCell < model.getMapSize() && xCell >= 0 &&
+		 * yCell >= 0) { waitForCellClick.set(false); } else {
+		 * waitForCellClick.set(true); }
+		 */
 		System.out.println("Xc: " + x + "  Yc: " + y);
 	}
 

@@ -3,7 +3,9 @@ package mainpackage;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Zeichenfeld extends JPanel {
@@ -13,6 +15,9 @@ public class Zeichenfeld extends JPanel {
 	private int squareSize = 50;
 	private int startDelta = 30;
 	private boolean buttonsCreated = false;
+	private boolean animationIsRunning = false;
+	
+	private JPanel buttonPanel;
 
 	public Zeichenfeld(Model model, Game game) {
 		super();
@@ -23,13 +28,18 @@ public class Zeichenfeld extends JPanel {
 
 	@Override
 	public void paintComponent(Graphics g) {
+		if (animationIsRunning) {
+			return;
+		}
+
+		g.clearRect(0, 0, getWidth(), getHeight());
 
 		CellType[][] map = model.getViewMap(0);
 		CellType[][] map2 = model.getViewMap(1);
 		int mapOffsetX = squareSize * (model.getMapSize() + 2);
 
 		paintShipMap(g, map, 0);
-		paintShootMapDEBUG(g, map2, mapOffsetX);
+		paintShootMap(g, map2, mapOffsetX);
 		if (!buttonsCreated) {
 			createButtons();
 			buttonsCreated = true;
@@ -37,8 +47,8 @@ public class Zeichenfeld extends JPanel {
 	}
 
 	private void createButtons() {
-		JPanel panel = new JPanel();
-		panel.setBounds(0, 0, 1500, 70);
+		buttonPanel = new JPanel();
+		buttonPanel.setBounds(0, 0, 1500, 70);
 
 		JButton verticalButton = new JButton("Vertikal");
 		JButton horizontalButton = new JButton("Horizontal");
@@ -59,23 +69,64 @@ public class Zeichenfeld extends JPanel {
 			game.setVertical(false);
 		});
 
-		panel.add(verticalButton);
-		panel.add(horizontalButton);
-		panel.setLayout(null);
-		panel.setVisible(true);
-		this.add(panel);
+		buttonPanel.add(verticalButton);
+		buttonPanel.add(horizontalButton);
+		buttonPanel.setLayout(null);
+		buttonPanel.setVisible(true);
+		this.add(buttonPanel);
 	}
 
-	private void paintButtons(Graphics g) {
-
-		/*
-		 * g.setColor(BUTTON_FILL); g.fillRect(80, 20, 120, 50);
-		 * g.setColor(BUTTON_OUTLINE); g.drawRect(80, 20, 120, 50);
-		 * 
-		 * 
-		 * g.setColor(BUTTON_OUTLINE_PRESSED); g.fillRect(280 - 2, 20 - 2, 120 + 4, 50 +
-		 * 4); g.setColor(BUTTON_FILL_PRESSED); g.fillRect(280, 20, 120, 50);
-		 */
+	public void startAnimation(int animation) {
+		animationIsRunning = true;
+		buttonPanel.setVisible(false);
+		
+		JPanel animationPanel = new JPanel();
+		animationPanel.setBounds(0, 0, 1500, 700);
+		this.add(animationPanel);
+		
+		ImageIcon image = new ImageIcon();
+		switch (animation) {
+		case 1:
+			 image = new ImageIcon("media/images/schiffVersenkt.gif");
+			break;
+		case 2:
+			 image = new ImageIcon("media/images/gewonnen3.gif");
+			 break;
+		default:
+			break;
+		}
+		
+		JLabel backgroundImage = new JLabel(image);
+//		backgroundImage.setBounds(0, 5, 1152, 648);
+		backgroundImage.setBounds(0, 20, 1600, 650);
+		backgroundImage.setVisible(true);
+		animationPanel.add(backgroundImage);
+		
+		int animationTime = 2600;
+		
+		switch (animation) {
+		case 1:
+			animationTime = 2600;
+			break;
+		case 2:
+			animationTime = 6000;
+			 break;
+		default:
+			break;
+		}
+		
+		try {
+			Thread.sleep(animationTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+//		backgroundImage.setVisible(false);
+		animationPanel.remove(backgroundImage);
+		animationPanel.setVisible(false);
+		buttonPanel.setVisible(true);
+		animationIsRunning = false;
+		repaint();
 	}
 
 	private void paintShipMap(Graphics g, CellType[][] map, int mapOffsetX) {

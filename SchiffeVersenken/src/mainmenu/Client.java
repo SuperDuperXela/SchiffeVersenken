@@ -25,11 +25,21 @@ public class Client extends Thread {
 	private boolean active = true;
 
 	public void startConnection(String ip, int port) {
+		System.out.println("1 DEBUG Client: trying to connect to " + ip + " port:" + port);
 		try {
+			System.out.println("2 DEBUG Client: trying to connect to " + ip + " port:" + port);
 			clientSocket = new Socket(ip, port);
+			System.out.println("3 DEBUG Client: trying to connect to " + ip + " port:" + port);
 //			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			oos = new ObjectOutputStream(clientSocket.getOutputStream());
 			ois = new ObjectInputStream(clientSocket.getInputStream());
+			
+			if (oos == null) {
+				System.out.println("DEBUG Client: oos is null!");
+			}
+			if (ois == null) {
+				System.out.println("DEBUG Client: ois is null!");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
