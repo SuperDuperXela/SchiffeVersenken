@@ -72,7 +72,6 @@ public class HostServer {
 		private Socket clientSocket;
 		private ObjectOutputStream oos;
 		private ObjectInputStream ois;
-//		private BufferedReader in;
 
 		public HostClientHandler(Socket socket) {
 			this.clientSocket = socket;
@@ -89,11 +88,9 @@ public class HostServer {
 		@Override
 		public void run() {
 			try {
-				//TODO debug
 				System.out.println("DEBUG HostClientHandler: start");
 				oos = new ObjectOutputStream(clientSocket.getOutputStream());
 				ois = new ObjectInputStream(clientSocket.getInputStream());
-//				in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 				while (active) {
 

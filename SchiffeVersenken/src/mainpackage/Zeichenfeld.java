@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class Zeichenfeld extends JPanel {
 
 	private transient Model model;
@@ -85,43 +86,32 @@ public class Zeichenfeld extends JPanel {
 		this.add(animationPanel);
 		
 		ImageIcon image = new ImageIcon();
+		int animationTime = 2600;
 		switch (animation) {
 		case 1:
 			 image = new ImageIcon("media/images/schiffVersenkt.gif");
+			 animationTime = 2600;
 			break;
 		case 2:
 			 image = new ImageIcon("media/images/gewonnen3.gif");
+			 animationTime = 6000;
 			 break;
 		default:
 			break;
 		}
 		
 		JLabel backgroundImage = new JLabel(image);
-//		backgroundImage.setBounds(0, 5, 1152, 648);
 		backgroundImage.setBounds(0, 20, 1600, 650);
 		backgroundImage.setVisible(true);
 		animationPanel.add(backgroundImage);
-		
-		int animationTime = 2600;
-		
-		switch (animation) {
-		case 1:
-			animationTime = 2600;
-			break;
-		case 2:
-			animationTime = 6000;
-			 break;
-		default:
-			break;
-		}
 		
 		try {
 			Thread.sleep(animationTime);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 		
-//		backgroundImage.setVisible(false);
 		animationPanel.remove(backgroundImage);
 		animationPanel.setVisible(false);
 		buttonPanel.setVisible(true);
@@ -195,6 +185,14 @@ public class Zeichenfeld extends JPanel {
 		}
 	}
 
+	/**
+	 * @param g
+	 * @param map
+	 * @param mapOffsetX
+	 * 
+	 * Displays oppponents ships on the ship map, used for debugging.
+	 */
+	@SuppressWarnings("unused")
 	private void paintShootMapDEBUG(Graphics g, CellType[][] map, int mapOffsetX) {
 		int cellOffsetX = startDelta + mapOffsetX;
 		int x = 0;

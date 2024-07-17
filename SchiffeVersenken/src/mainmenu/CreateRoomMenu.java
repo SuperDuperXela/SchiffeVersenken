@@ -1,13 +1,13 @@
 package mainmenu;
 
+import java.awt.Color;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
-
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import mainpackage.CellType;
 import mainpackage.Game;
 import mainpackage.Model;
@@ -19,20 +19,21 @@ public class CreateRoomMenu {
 	private static final int WINDOW_WIDTH = 900;
 	private static final int WINDOW_HEIGHT = 600;
 
-	private HostServer server;
+	private static final Color buttonBackgroundEnabled = new Color(44, 70, 120);
+	private static final Color buttonBackgroundDisabled = new Color(70, 70, 70);
 
 	private JLabel testLabel;
 
+	private JButton createRoomButton;
 	private JButton closeRoomButton;
-
 	private JButton readyButton;
 
 	private boolean hostReady = false;
 	private boolean clientReady = false;
 
 	private Model model;
-
 	private Game game;
+	private HostServer server;
 
 	public CreateRoomMenu() {
 
@@ -44,37 +45,56 @@ public class CreateRoomMenu {
 		mainPanel.setBounds(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 		mainPanel.setLayout(null);
 
+		ImageIcon image = new ImageIcon("media/images/schiffMenuHintergrund.png");
+		JLabel backgroundImage = new JLabel(image);
+		backgroundImage.setBounds(0, 5, 1000, 750);
+
 		testLabel = new JLabel("");
 		testLabel.setBounds(30, 30, 150, 20);
 		mainPanel.add(testLabel);
 
-		JButton createRoomButton = new JButton("Raum öffnen!");
-		createRoomButton.setBounds(50, 50, 150, 50);
-		createRoomButton.addActionListener(e -> {
-			createRoom();
-			createRoomButton.setEnabled(false);
-			closeRoomButton.setEnabled(true);
-		});
+		createRoomButton = createButton("Raum öffnen!", e -> createRoomButton());
+		createRoomButton.setBounds(30, 100, 150, 50);
 		mainPanel.add(createRoomButton);
 
-		closeRoomButton = new JButton("Raum schließen!");
-		closeRoomButton.setBounds(50, 100, 150, 50);
+		closeRoomButton =  createButton("Raum schließen!", e -> closeRoomButton());
+		closeRoomButton.setBounds(30, 150, 150, 50);
+		closeRoomButton.setBackground(buttonBackgroundDisabled);
 		closeRoomButton.setEnabled(false);
-		closeRoomButton.addActionListener(e -> {
-			closeRoom();
-			createRoomButton.setEnabled(true);
-			closeRoomButton.setEnabled(false);
-		});
 		mainPanel.add(closeRoomButton);
 
-		readyButton = new JButton("Bereit!");
-		readyButton.setBounds(50, 150, 150, 50);
-		readyButton.addActionListener(e -> ready());
+		readyButton = createButton("Bereit!", e -> ready());
+		readyButton.setBounds(30, 200, 150, 50);
 		mainPanel.add(readyButton);
 
+		mainPanel.add(backgroundImage);
 		frame.add(mainPanel);
 		frame.setVisible(true);
-
+	}
+	
+	private JButton createButton(String buttonText, ActionListener listener) {
+		JButton button = new JButton(buttonText);
+		button.addActionListener(listener);
+		button.setBackground(buttonBackgroundEnabled);
+		button.setForeground(Color.WHITE);
+		button.setFocusPainted(false);
+		return button;
+	}
+	
+	private void createRoomButton() {
+		createRoom();
+		createRoomButton.setBackground(buttonBackgroundDisabled);
+		closeRoomButton.setBackground(buttonBackgroundEnabled);
+		createRoomButton.setEnabled(false);
+		closeRoomButton.setEnabled(true);
+	}
+	
+	private void closeRoomButton() {
+		closeRoom();
+		closeRoomButton.setBackground(buttonBackgroundDisabled);
+		createRoomButton.setBackground(buttonBackgroundEnabled);
+		createRoomButton.setEnabled(true);
+		closeRoomButton.setEnabled(false);
 	}
 
 	private void createRoom() {
@@ -93,10 +113,12 @@ public class CreateRoomMenu {
 	private void ready() {
 		if (!hostReady) {
 			hostReady = true;
-			readyButton.setText("Unready!");
+			readyButton.setText("Nicht bereit!");
+			readyButton.setBackground(buttonBackgroundDisabled);
 		} else {
 			hostReady = false;
-			readyButton.setText("Ready!");
+			readyButton.setText("Bereit!");
+			readyButton.setBackground(buttonBackgroundEnabled);
 		}
 
 		if (hostReady && clientReady) {
@@ -146,10 +168,8 @@ public class CreateRoomMenu {
 		model.updateshipLists(shipLists);
 
 		game.setWaitForOtherPlayer(false);
-
-//		sendGameData();
 	}
-	
+
 	public void handleGameData(Model otherModel) {
 		// update viewMaps
 		ArrayList<CellType[][]> listo = new ArrayList<>();
