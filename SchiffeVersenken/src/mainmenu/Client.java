@@ -3,6 +3,7 @@ package mainmenu;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class Client extends Thread {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
 
 	@Override

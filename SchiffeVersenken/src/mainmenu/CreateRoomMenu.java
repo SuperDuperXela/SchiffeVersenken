@@ -36,7 +36,6 @@ public class CreateRoomMenu {
 	private HostServer server;
 
 	public CreateRoomMenu() {
-
 		JFrame frame = new JFrame("Raum erstellen");
 		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		frame.setLayout(null);
@@ -53,25 +52,25 @@ public class CreateRoomMenu {
 		testLabel.setBounds(30, 30, 150, 20);
 		mainPanel.add(testLabel);
 
-		createRoomButton = createButton("Raum öffnen!", e -> createRoomButton());
-		createRoomButton.setBounds(30, 100, 150, 50);
+		createRoomButton = createButton("Raum öffnen", e -> createRoomButton());
+		createRoomButton.setBounds(30, 100, 150, 45);
 		mainPanel.add(createRoomButton);
 
-		closeRoomButton =  createButton("Raum schließen!", e -> closeRoomButton());
-		closeRoomButton.setBounds(30, 150, 150, 50);
+		closeRoomButton = createButton("Raum schließen", e -> closeRoomButton());
+		closeRoomButton.setBounds(30, 155, 150, 45);
 		closeRoomButton.setBackground(buttonBackgroundDisabled);
 		closeRoomButton.setEnabled(false);
 		mainPanel.add(closeRoomButton);
 
-		readyButton = createButton("Bereit!", e -> ready());
-		readyButton.setBounds(30, 200, 150, 50);
+		readyButton = createButton("Bereit", e -> ready());
+		readyButton.setBounds(30, 210, 150, 45);
 		mainPanel.add(readyButton);
 
 		mainPanel.add(backgroundImage);
 		frame.add(mainPanel);
 		frame.setVisible(true);
 	}
-	
+
 	private JButton createButton(String buttonText, ActionListener listener) {
 		JButton button = new JButton(buttonText);
 		button.addActionListener(listener);
@@ -80,7 +79,7 @@ public class CreateRoomMenu {
 		button.setFocusPainted(false);
 		return button;
 	}
-	
+
 	private void createRoomButton() {
 		createRoom();
 		createRoomButton.setBackground(buttonBackgroundDisabled);
@@ -88,7 +87,7 @@ public class CreateRoomMenu {
 		createRoomButton.setEnabled(false);
 		closeRoomButton.setEnabled(true);
 	}
-	
+
 	private void closeRoomButton() {
 		closeRoom();
 		closeRoomButton.setBackground(buttonBackgroundDisabled);
@@ -113,11 +112,11 @@ public class CreateRoomMenu {
 	private void ready() {
 		if (!hostReady) {
 			hostReady = true;
-			readyButton.setText("Nicht bereit!");
+			readyButton.setText("Nicht bereit");
 			readyButton.setBackground(buttonBackgroundDisabled);
 		} else {
 			hostReady = false;
-			readyButton.setText("Bereit!");
+			readyButton.setText("Bereit");
 			readyButton.setBackground(buttonBackgroundEnabled);
 		}
 
