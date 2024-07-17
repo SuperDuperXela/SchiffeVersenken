@@ -2,7 +2,12 @@ package mainpackage;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,6 +22,7 @@ public class Zeichenfeld extends JPanel {
 	private int startDelta = 30;
 	private boolean buttonsCreated = false;
 	private boolean animationIsRunning = false;
+	private static BufferedImage backgroundImage;
 	
 	private JPanel buttonPanel;
 
@@ -25,6 +31,11 @@ public class Zeichenfeld extends JPanel {
 		this.model = model;
 		this.game = game;
 		this.setLayout(null);
+		try {
+			backgroundImage = ImageIO.read(new File("media/images/schiffMenuHintergrundErweitert.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -34,6 +45,8 @@ public class Zeichenfeld extends JPanel {
 		}
 
 		g.clearRect(0, 0, getWidth(), getHeight());
+		
+		g.drawImage(backgroundImage, 0, 0, null);
 
 		CellType[][] map = model.getViewMap(0);
 		CellType[][] map2 = model.getViewMap(1);
@@ -49,12 +62,13 @@ public class Zeichenfeld extends JPanel {
 
 	private void createButtons() {
 		buttonPanel = new JPanel();
-		buttonPanel.setBounds(0, 0, 1500, 70);
+		buttonPanel.setBounds(100, 0, 340, 61);
+		buttonPanel.setBackground(new Color(25, 30, 40));
 
 		JButton verticalButton = new JButton("Vertikal");
 		JButton horizontalButton = new JButton("Horizontal");
 
-		verticalButton.setBounds(80, 20, 120, 40);
+		verticalButton.setBounds(0, 20, 120, 40);
 		verticalButton.setEnabled(false);
 		verticalButton.addActionListener(e -> {
 			verticalButton.setEnabled(false);
@@ -62,7 +76,7 @@ public class Zeichenfeld extends JPanel {
 			game.setVertical(true);
 		});
 
-		horizontalButton.setBounds(220, 20, 120, 40);
+		horizontalButton.setBounds(140, 20, 120, 40);
 		horizontalButton.setEnabled(true);
 		horizontalButton.addActionListener(e -> {
 			verticalButton.setEnabled(true);
@@ -82,7 +96,7 @@ public class Zeichenfeld extends JPanel {
 		buttonPanel.setVisible(false);
 		
 		JPanel animationPanel = new JPanel();
-		animationPanel.setBounds(0, 0, 1500, 700);
+		animationPanel.setBounds(0, 0, 1300, 700);
 		this.add(animationPanel);
 		
 		ImageIcon image = new ImageIcon();
@@ -100,10 +114,10 @@ public class Zeichenfeld extends JPanel {
 			break;
 		}
 		
-		JLabel backgroundImage = new JLabel(image);
-		backgroundImage.setBounds(0, 20, 1600, 650);
-		backgroundImage.setVisible(true);
-		animationPanel.add(backgroundImage);
+		JLabel animationLabel = new JLabel(image);
+		animationLabel.setBounds(0, 20, 1300, 650);
+		animationLabel.setVisible(true);
+		animationPanel.add(animationLabel);
 		
 		try {
 			Thread.sleep(animationTime);
@@ -112,7 +126,7 @@ public class Zeichenfeld extends JPanel {
 			Thread.currentThread().interrupt();
 		}
 		
-		animationPanel.remove(backgroundImage);
+		animationPanel.remove(animationLabel);
 		animationPanel.setVisible(false);
 		buttonPanel.setVisible(true);
 		animationIsRunning = false;

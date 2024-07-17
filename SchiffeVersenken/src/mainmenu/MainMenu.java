@@ -24,8 +24,8 @@ public class MainMenu {
 		frame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
 		JPanel mainPanel = new JPanel();
-		mainPanel.setBounds(10, 110, 350, 250);
-		mainPanel.setLayout(new GridLayout(5, 1, 0, 10));
+		mainPanel.setBounds(10, 110, 350, 200);
+		mainPanel.setLayout(new GridLayout(4, 1, 0, 10));
 		mainPanel.setBackground(new Color(25, 30, 40));
 		
 		JPanel backgroundPanel = new JPanel();
